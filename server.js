@@ -53,9 +53,6 @@ app.use(express.static(path.join(__dirname, "public")));
 mongoose.connect("mongodb+srv://sanjuuppal458:5Lciha7fjOz41VLB@cluster0.p9ulddp.mongodb.net/Plantwebsite?retryWrites=true&w=majority&appName=Cluster0", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-})
-.then(() => console.log("✅ MongoDB connected"))
-.catch((err) => console.log("❌ MongoDB error", err));
 
 
 }).then(() => console.log("✅ MongoDB connected"))
