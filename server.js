@@ -1,3 +1,5 @@
+
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -48,9 +50,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // MongoDB connection
-mongoose.connect("mongodb://127.0.0.1:27017/Plantwebsite", {
+mongoose.connect("mongodb+srv://sanjuuppal458:5Lciha7fjOz41VLB@cluster0.abcde.mongodb.net/Plantwebsite?retryWrites=true&w=majority", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+
 }).then(() => console.log("✅ MongoDB connected"))
   .catch((err) => console.log("❌ MongoDB error", err));
 
