@@ -50,7 +50,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // MongoDB connection
-mongoose.connect("mongodb+srv://sanjuuppal458:5Lciha7fjOz41VLB@cluster0.abcde.mongodb.net/Plantwebsite?retryWrites=true&w=majority", {
+mongodb+srv://sanjuuppal458:5Lciha7fjOz41VLB@cluster0.p9ulddp.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
   useNewUrlParser: true,
   useUnifiedTopology: true,
 
