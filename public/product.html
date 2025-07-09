@@ -429,7 +429,7 @@
   <script>
     // Product data with unique IDs (40 products)
     const products = [
-      { id: 1, name: "Monstera Deliciosa", price: 45, image: "/images/3.avif", description: "Beautiful tropical plant with large leaves.", rating: 4.5, stock: true, specs: ["Height: 2-3 ft", "Light: Indirect", "Water: Moderate"] },
+      { id: 1, name: "Monstera Deliciosa", price:45, image: "/images/3.avif", description: "Beautiful tropical plant with large leaves.", rating: 4.5, stock: true, specs: ["Height: 2-3 ft", "Light: Indirect", "Water: Moderate"] },
       { id: 2, name: "Money Plant", price: 65, image: "/images/money plant.webp", description: "Known for good fortune and air purification.", rating: 4.2, stock: true, specs: ["Height: 1-2 ft", "Light: Low", "Water: Low"] },
       { id: 3, name: "Happy Plant", price: 45, image: "/images/happy.jpeg", description: "Low-maintenance plant perfect for indoors.", rating: 4.0, stock: true, specs: ["Height: 2 ft", "Light: Bright", "Water: Moderate"] },
       { id: 4, name: "Spider Plant", price: 22, image: "/images/spider.jpeg", description: "Easy-to-grow plant with arching leaves.", rating: 4.7, stock: true, specs: ["Height: 1-2 ft", "Light: Indirect", "Water: Low"] },
@@ -492,7 +492,7 @@
         <div class="product-details">
           <h1>${product.name}</h1>
           <div class="rating">${stars} (${product.rating}/5)</div>
-          <p class="price">$${product.price}</p>
+          <p class="price">₹${product.price}</p>
           <p class="availability ${availabilityClass}"><i class="fas fa-check"></i> ${availabilityText}</p>
           <p>${product.description}</p>
           <div class="quantity-selector">
@@ -578,7 +578,7 @@
       // Calculate totals
       const totalPrice = price * quantity;
       const discount = totalPrice * 0.68; // 68% discount as per payment.html
-      const deliveryFee = 40; // Fixed delivery fee
+      const deliveryFee = 0; // Fixed delivery fee
       const finalAmount = totalPrice - discount + deliveryFee;
 
       // Create pendingOrder object
@@ -628,9 +628,9 @@
       relatedList.innerHTML = relatedProducts.map(p => `
         <div class="product-item">
           <a href="product.html?id=${p.id}">
-            <img src="${p.image}" alt="${p.name}">
-            <h4>${p.name}</h4>
-            <p class="price">$${p.price}</p>
+            <img src="₹${p.image}" alt="${p.name}">
+            <h4>₹${p.name}</h4>
+            <p class="price">₹${p.price}</p>
           </a>
         </div>
       `).join('');
@@ -647,7 +647,7 @@
             <a href="product.html?id=${p.id}">
               <img src="${p.image}" alt="${p.name}">
               <h4>${p.name}</h4>
-              <p class="price">$${p.price}</p>
+              <p class="price">₹${p.price}</p>
             </a>
           </div>
         `).join('')}
