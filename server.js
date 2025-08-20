@@ -49,13 +49,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// MongoDB connection
-mongoose.connect("mongodb://127.0.0.1:27017/Plantwebsite", {
+const MONGO_URI = "mongodb+srv://sanjuuppal458:ieB3JHEEk4l87aZK@cluster0.p9ulddp.mongodb.net/Plantwebsite?retryWrites=true&w=majority&appName=Cluster0";
+
+mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-}).then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.log("❌ MongoDB error", err));
-
+})
+.then(() => console.log("✅ MongoDB connected"))
+.catch((err) => console.error("❌ MongoDB error:", err));
 // User Schema
 const userSchema = new mongoose.Schema({
   firstName: String,
@@ -543,3 +544,4 @@ app.delete("/orders/:id", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
+
