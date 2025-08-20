@@ -6,6 +6,8 @@ const bcrypt = require("bcryptjs");
 const nodemailer = require("nodemailer");
 const multer = require("multer");
 
+
+
 const app = express();
 const PORT = 3000;
 
@@ -33,6 +35,7 @@ const upload = multer({
     }
   }
 });
+
 
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
@@ -214,66 +217,11 @@ app.post("/orders", async (req, res) => {
   }
 });
 
-// GET CART ITEMS (USER-SPECIFIC)
-app.get("/cart", async (req, res) => {
-  try {
-    const { userId, email } = req.query;
-    let query = {};
-    
-    if (userId) query.userId = userId;
-    if (email) query.email = email;
-    
-    const items = await Cart.find(query);
-    res.json(items);
-  } catch (err) {
-    console.error("Get cart error:", err);
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// ADD TO CART (WITH USER VERIFICATION)
-app.post("/cart", async (req, res) => {
-  try {
-    const { userId, itemId } = req.body;
-    
-    // Check if item already exists for this user
-    const existingItem = await Cart.findOne({ userId, itemId });
-    
-    if (existingItem) {
-      // Update quantity if item exists
-      existingItem.quantity += req.body.quantity || 1;
-      await existingItem.save();
-      console.log("Cart item quantity updated:", existingItem._id);
-      res.json({ success: true, message: "Cart item quantity updated" });
-    } else {
-      // Add new item if it doesn't exist
-      const cartItem = new Cart(req.body);
-      await cartItem.save();
-      console.log("Cart item added:", req.body);
-      res.json({ success: true, message: "Item added to cart" });
-    }
-  } catch (err) {
-    console.error("Add to cart error:", err);
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-// UPDATE CART ITEM QUANTITY (WITH USER VERIFICATION)
+// UPDATE CART ITEM QUANTITY
 app.patch("/cart/:id", async (req, res) => {
   try {
-    const { quantity, userId } = req.body;
-    const item = await Cart.findById(req.params.id);
-    
-    if (!item) {
-      return res.status(404).json({ success: false, message: "Item not found" });
-    }
-    
-    if (item.userId !== userId) {
-      return res.status(403).json({ success: false, message: "Not authorized" });
-    }
-    
-    item.quantity = quantity;
-    await item.save();
+    const { quantity } = req.body;
+    await Cart.findByIdAndUpdate(req.params.id, { quantity }, { new: true });
     console.log("Cart item updated:", req.params.id);
     res.json({ success: true, message: "Cart item updated" });
   } catch (err) {
@@ -282,30 +230,6 @@ app.patch("/cart/:id", async (req, res) => {
   }
 });
 
-// DELETE SPECIFIC CART ITEM (WITH USER VERIFICATION)
-app.delete("/cart/:id", async (req, res) => {
-  try {
-    const { userId } = req.query;
-    const item = await Cart.findById(req.params.id);
-    
-    if (!item) {
-      return res.status(404).json({ success: false, message: "Item not found" });
-    }
-    
-    if (item.userId !== userId) {
-      return res.status(403).json({ success: false, message: "Not authorized" });
-    }
-    
-    await Cart.findByIdAndDelete(req.params.id);
-    console.log("Cart item deleted:", req.params.id);
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Delete cart item error:", err);
-    res.status(500).json({ success: false, error: err.message });
-  }
-});
-
-// DELETE ALL CART ITEMS
 app.delete("/cart", async (req, res) => {
   try {
     await Cart.deleteMany({});
@@ -317,7 +241,6 @@ app.delete("/cart", async (req, res) => {
   }
 });
 
-// DELETE ALL ORDERS
 app.delete("/orders", async (req, res) => {
   try {
     await Order.deleteMany({});
@@ -528,7 +451,40 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// WISHLIST ROUTES
+// CART ROUTES
+app.post("/cart", async (req, res) => {
+  try {
+    const cartItem = new Cart(req.body);
+    await cartItem.save();
+    console.log("Cart item added:", req.body);
+    res.json({ success: true, message: "Item added to cart" });
+  } catch (err) {
+    console.error("Add to cart error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+app.get("/cart", async (req, res) => {
+  try {
+    const items = await Cart.find({});
+    res.json(items);
+  } catch (err) {
+    console.error("Get cart error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete("/cart/:id", async (req, res) => {
+  try {
+    await Cart.findByIdAndDelete(req.params.id);
+    console.log("Cart item deleted:", req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Delete cart item error:", err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 app.post("/wishlist", async (req, res) => {
   try {
     const item = new WishlistItem(req.body);
@@ -543,12 +499,7 @@ app.post("/wishlist", async (req, res) => {
 
 app.get("/wishlist", async (req, res) => {
   try {
-    const { userId } = req.query;
-    let query = {};
-    
-    if (userId) query.userId = userId;
-    
-    const items = await WishlistItem.find(query);
+    const items = await WishlistItem.find();
     res.json(items);
   } catch (err) {
     console.error("Get wishlist error:", err);
@@ -567,15 +518,9 @@ app.delete("/wishlist/:id", async (req, res) => {
   }
 });
 
-// ORDER ROUTES
 app.get("/orders", async (req, res) => {
   try {
-    const { userId } = req.query;
-    let query = {};
-    
-    if (userId) query.userId = userId;
-    
-    const orders = await Order.find(query);
+    const orders = await Order.find({});
     res.json(orders);
   } catch (err) {
     console.error("Get orders error:", err);
